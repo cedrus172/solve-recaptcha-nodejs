@@ -38,23 +38,34 @@ app.get("/list/:webName", function (req, res) {
   );
 });
 
-app.get("/captcha/:webName", function (req, res) {
+app.get("/captcha/:webName", async function (req, res) {
   let findCaptcha = listCaptchaWeb.find(
     (a) => a.webName == req.params.webName.toLowerCase()
   );
-
+  while (findCaptcha == null) {
+    await sleep(1000);
+    findCaptcha = listCaptchaWeb.find(
+      (a) => a.webName == req.params.webName.toLowerCase()
+    );
+  }
   listCaptchaWeb = listCaptchaWeb.filter((a) => a != findCaptcha);
   res.json(findCaptcha);
 });
+
+app.get("/thread", function (req, res) {
+  res.json({ thread: currentThread });
+});
+
+var currentThread = 0;
 
 let listCaptchaWeb = [];
 let listWeb = [
   {
     webName: "pocinex-web",
-    googleKey: "",
+    googleKey: "6LezeH4bAAAAADaKWgP8pKekA_CSYJuSh1eUcwMh",
     url: "https://moonata1.net",
     keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
-    canSolve: false,
+    canSolve: true,
   },
   {
     webName: "aresbo-web",
@@ -68,14 +79,14 @@ let listWeb = [
     googleKey: "6LcGyCAfAAAAABKPMWfnz1ZB8CK1b3LcYAKC-CSd",
     url: "https://tlctrade.net",
     keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
-    canSolve: false,
+    canSolve: true,
   },
   {
     webName: "rosichi-web",
     googleKey: "6LeaaYkcAAAAAEEbhDH0Pr5gFD74Z7BDMgQy2MbE",
     url: "https://bitiva1.net",
     keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
-    canSolve: false,
+    canSolve: true,
   },
   {
     webName: "bodefi-web",
@@ -83,6 +94,13 @@ let listWeb = [
     url: "https://bodefi.net",
     keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
     canSolve: false,
+  },
+  {
+    webName: "binanex-web",
+    googleKey: "6Ldqd34bAAAAAPPlIpT3EkI6h2NlLO_xg61BsILg",
+    url: "https://central1.vip",
+    keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
+    canSolve: true,
   },
 ];
 const azCaptcha = require("./handles/azCaptcha");
@@ -94,6 +112,7 @@ async function getCaptchaCode(webName) {
     webInfo.googleKey,
     webInfo.keyCaptcha
   );
+  currentThread++;
   if (id != null) {
     await sleep(5000);
     let captchaCode = await azCaptcha.getCaptchaCode(
@@ -108,6 +127,7 @@ async function getCaptchaCode(webName) {
     console.log(webName, captchaCode, id);
     getCaptchaCode(webName);
   }
+  currentThread--;
 }
 
 function addCaptchaToList(captchaCode, webName, timeSolve) {
@@ -136,7 +156,7 @@ function filterCaptchaExpired() {
   try {
     listCaptchaWeb.forEach((captcha) => {
       let newTime = new Date(captcha.timeSolve);
-      newTime.setSeconds(newTime.getSeconds() + 30);
+      newTime.setSeconds(newTime.getSeconds() + 90);
       if (newTime > new Date()) tempCaptcha.push(captcha);
     });
 
@@ -146,4 +166,4 @@ function filterCaptchaExpired() {
   }
 }
 
-startSolveCaptcha(10);
+startSolveCaptcha(5);
