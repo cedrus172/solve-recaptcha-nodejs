@@ -34,7 +34,7 @@ app.get("/dashboard", function(req, res) {
         if (web.canSolve) {
             let findCaptchas = listCaptchaWeb.filter(a => a.webName == web.webName);
             if (findCaptchas) {
-                data.push({ webName: web.webName, countCaptcha: findCaptchas.length });
+                data.push({ webName: web.webName, countCaptcha: findCaptchas.length, solving: web.solving });
             }
         }
     })
@@ -84,6 +84,7 @@ let listWeb = [{
         url: "https://moonata1.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
+        solving: 0
     },
     {
         webName: "aresbo-web",
@@ -91,6 +92,7 @@ let listWeb = [{
         url: "https://ravo1.finance",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
+        solving: 0
     },
     {
         webName: "tlctrade-web",
@@ -98,6 +100,7 @@ let listWeb = [{
         url: "https://tlctrade.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
+        solving: 0
     },
     {
         webName: "rosichi-web",
@@ -105,6 +108,7 @@ let listWeb = [{
         url: "https://bitiva1.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
+        solving: 0
     },
     {
         webName: "bodefi-web",
@@ -112,6 +116,7 @@ let listWeb = [{
         url: "https://bodefi.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: false,
+        solving: 0
     },
     {
         webName: "binanex-web",
@@ -119,18 +124,20 @@ let listWeb = [{
         url: "https://central1.vip",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
+        solving: 0
     },
 ];
 const azCaptcha = require("./handles/azCaptcha");
 
 async function getCaptchaCode(webName) {
     let webInfo = listWeb.find((a) => a.webName == webName);
+    webInfo.solving++;
+    currentThread++;
     let id = await azCaptcha.getIdCaptcha(
         webInfo.url,
         webInfo.googleKey,
         webInfo.keyCaptcha
     );
-    currentThread++;
     if (id != null) {
         await sleep(5000);
         let captchaCode = await azCaptcha.getCaptchaCode(
@@ -146,6 +153,7 @@ async function getCaptchaCode(webName) {
         getCaptchaCode(webName);
     }
     currentThread--;
+    webInfo.solving--;
 }
 
 function addCaptchaToList(captchaCode, webName, timeSolve) {
