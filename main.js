@@ -84,7 +84,8 @@ let listWeb = [{
         url: "https://moonata1.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
-        solving: 0
+        solving: 0,
+        thread: 3
     },
     {
         webName: "aresbo-web",
@@ -92,7 +93,8 @@ let listWeb = [{
         url: "https://ravo1.finance",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
-        solving: 0
+        solving: 0,
+        thread: 10
     },
     {
         webName: "tlctrade-web",
@@ -100,7 +102,8 @@ let listWeb = [{
         url: "https://tlctrade.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
-        solving: 0
+        solving: 0,
+        thread: 3
     },
     {
         webName: "rosichi-web",
@@ -108,7 +111,8 @@ let listWeb = [{
         url: "https://bitiva1.net",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
-        solving: 0
+        solving: 0,
+        thread: 5
     },
     {
         webName: "bodefi-web",
@@ -124,7 +128,8 @@ let listWeb = [{
         url: "https://central1.vip",
         keyCaptcha: "thread_66a54241da3851e304520f092bfee687",
         canSolve: true,
-        solving: 0
+        solving: 0,
+        thread: 2
     },
 ];
 const azCaptcha = require("./handles/azCaptcha");
@@ -164,14 +169,14 @@ function addCaptchaToList(captchaCode, webName, timeSolve) {
     });
 }
 
-function startSolveCaptcha(thread) {
-    for (let i = 0; i < thread; i++) {
-        listWeb.forEach((web) => {
-            if (web.canSolve) {
+function startSolveCaptcha() {
+    listWeb.forEach((web) => {
+        if (web.canSolve) {
+            for (let i = 0; i < web.thread; i++) {
                 getCaptchaCode(web.webName);
             }
-        });
-    }
+        }
+    });
 
     setInterval(filterCaptchaExpired, 500);
 }
@@ -192,4 +197,4 @@ function filterCaptchaExpired() {
     }
 }
 
-startSolveCaptcha(5);
+startSolveCaptcha();
