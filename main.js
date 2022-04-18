@@ -28,6 +28,20 @@ app.get("/", function(req, res) {
     res.send("Hello World!");
 });
 
+app.get("/dashboard", function(req, res) {
+    let data = [];
+    listWeb.forEach(web => {
+        if (web.canSolve) {
+            let findCaptchas = listCaptchaWeb.filter(a => a.webName == web.webName);
+            if (findCaptchas) {
+                data.push({ webName: web.webName, countCaptcha: findCaptchas.length });
+            }
+        }
+    })
+
+    res.json(data)
+})
+
 app.get("/list", function(req, res) {
     res.json(listCaptchaWeb);
 });
