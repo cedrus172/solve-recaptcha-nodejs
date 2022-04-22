@@ -6,7 +6,7 @@ function sleep(ms) {
   });
 }
 exports.getIdCaptcha = async (url, googleKey, keyCaptcha) => {
-  let apiUrl = `https://azcaptcha.com/in.php?key=${keyCaptcha}&googlekey=${googleKey}&method=userrecaptcha&invisible=1&pageurl=${url}`;
+  let apiUrl = `https://captcha69.com/in.php?key=${keyCaptcha}&googlekey=${googleKey}&method=userrecaptcha&invisible=1&pageurl=${url}`;
   let response = await axios.get(apiUrl);
   while (response.data.indexOf("ERROR_") > -1) {
     await sleep(3000);
@@ -16,7 +16,7 @@ exports.getIdCaptcha = async (url, googleKey, keyCaptcha) => {
 };
 
 exports.getCaptchaCode = async (id, webName, keyCaptcha) => {
-  let apiUrl = `https://azcaptcha.com/res.php?key=${keyCaptcha}&action=get&id=${id}`;
+  let apiUrl = `https://captcha69.com/res.php?key=${keyCaptcha}&action=get&id=${id}`;
   let response = await axios.get(apiUrl);
   let count = 0;
   while (response.data.indexOf("CAPCHA_NOT_READY") > -1) {
